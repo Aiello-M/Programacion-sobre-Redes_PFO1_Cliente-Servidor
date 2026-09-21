@@ -7,10 +7,10 @@
 <br>
 
 ![Status](https://img.shields.io/badge/STATUS-EN%20PRUEBAS-yellow?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3-blue?style=for-the-badge&logo=python&logoColor=blue)
-![SQLite](https://img.shields.io/badge/SQLite-orange?style=for-the-badge&logo=sqlite&logoColor=cream)
+![Python](https://img.shields.io/badge/Python-3.13.15-blue?style=for-the-badge&logo=python&logoColor=blue)
+![SQLite](https://img.shields.io/badge/SQLite-purple?style=for-the-badge&logo=sqlite&logoColor=cream)
 ![Sockets](https://img.shields.io/badge/Sockets-TCP%2FIP-green?style=for-the-badge)
-![GitHub](https://img.shields.io/badge/GitHub-Repositorio-purple?style=for-the-badge&logo=github&logoColor=white)
+![GitHub](https://img.shields.io/badge/-GitHub-gray?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
 
@@ -186,14 +186,14 @@ En caso de finalizar la ejecución, la conexión con la base de datos se cierra 
 
 ## 👤 Cliente
 
-El archivo `cliente.py` establece la conexión con el servidor y gestiona la interacción con el usuario, permitiendole enviar múltiples mensajes.
+El archivo `cliente.py` establece la conexión con el servidor y gestiona la interacción con el usuario, permitiéndole enviar múltiples mensajes.
 
 ### Funciones principales
 
 | Función | Descripción |
 | :--- | :--- |
 | `conectar_servidor()` | Crea el socket TCP/IP del cliente y establece la conexión con `localhost:5000`. |
-| `gestionar_mensajes()` | Gestiona los mensajes ingresados por el usuario y el intercambio de datos con el servidor hasta finalizar la sesión (usuarioescribe `éxito`). |
+| `gestionar_mensajes()` | Gestiona los mensajes ingresados por el usuario y el intercambio de datos con el servidor hasta finalizar la sesión (el usuario escribe `éxito`). |
 | `ejecutar_cliente()` | Coordina la ejecución del cliente y maneja posibles errores de conexión o de red. |
 
 <br>
@@ -436,7 +436,7 @@ Para finalizar la sesión, escribir `éxito`.
 
 <div align="center">
 
-<p>  IFTS N°29 - Tecnicatura Superior en Desarrollo de Software - Programación sobre Redes</p>
-<p> MIT License - Desarrollado por <strong>Mariana Aiello</strong> </p>
+<p>IFTS N°29 - Tecnicatura Superior en Desarrollo de Software - Programación sobre Redes</p>
+<p>Desarrollado por <strong>Mariana Aiello</strong></p>
 </div>
 
