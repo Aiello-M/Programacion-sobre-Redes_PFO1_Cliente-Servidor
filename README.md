@@ -6,10 +6,10 @@
 
 <br>
 
-![Status](https://img.shields.io/badge/STATUS-EN%20PRUEBAS-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/STATUS-FINALIZADO-brightgreen?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.13.15-blue?style=for-the-badge&logo=python&logoColor=blue)
 ![SQLite](https://img.shields.io/badge/SQLite-purple?style=for-the-badge&logo=sqlite&logoColor=cream)
-![Sockets](https://img.shields.io/badge/Sockets-TCP%2FIP-green?style=for-the-badge)
+![Sockets](https://img.shields.io/badge/Sockets-TCP%2FIP-yellow?style=for-the-badge)
 ![GitHub](https://img.shields.io/badge/-GitHub-gray?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
@@ -126,9 +126,13 @@ Programacion-sobre-Redes_PFO1_Cliente-Servidor/
 │
 └── assets/                # Recursos utilizados en el README
     ├── imgPerfil.jpg
-    ├── demo-chat.gif
-    ├── test-servidor.png
-    ├── test-cliente.png
+    ├── test-servidor.gif
+    ├── test-mensajes.gif
+    ├── test-mensajes-cliente.png
+    ├── test-mensajes-servidor.png
+    ├── test-mensajes-vacios.gif
+    ├── test-mensajes-vacios-cliente.png
+    ├── test-mensajes-vacios-servidor.png
     └── test-base-datos.png
 ```
 
@@ -290,7 +294,7 @@ SQLite permite almacenar los mensajes en un archivo local sin necesidad de insta
 
 ## 📈 Testing
 
-Se realizaron pruebas locales ejecutando primero `servidor.py` y luego `cliente.py` desde una segunda terminal.
+Se realizaron pruebas locales ejecutando `servidor.py` y `cliente.py` desde terminales separadas.
 
 Se verificaron los principales comportamientos del sistema:
 
@@ -298,32 +302,81 @@ Se verificaron los principales comportamientos del sistema:
 | :--- | :--- | :---: |
 | Iniciar servidor | Servidor escuchando en `localhost:5000` | ✅ |
 | Conectar cliente | Conexión establecida correctamente | ✅ |
-| Enviar un mensaje | Mensaje almacenado y confirmación recibida | ✅ |
-| Enviar varios mensajes | Todos son procesados dentro de la misma sesión | ✅ |
-| Enviar mensaje vacío | El mensaje no se envía y se solicita uno nuevo | ✅ |
+| Enviar varios mensajes | Los mensajes son procesados dentro de la misma sesión | ✅ |
+| Recibir confirmación | El servidor responde con la fecha y hora de recepción | ✅ |
 | Escribir `éxito` | La sesión finaliza correctamente | ✅ |
-| Ejecutar cliente sin servidor | Se informa que no se pudo establecer la conexión | ✅ |
-| Verificar SQLite | Los mensajes quedan almacenados en `chat.db` | ✅ |
+| Enviar mensaje vacío | El mensaje no se envía y se solicita uno nuevo | ✅ |
+| Verificar SQLite | Los mensajes válidos quedan almacenados en `chat.db` | ✅ |
 
 ### Evidencias
 
-- **Comunicación Cliente-Servidor**
+#### 1. Inicio del servidor
 
+- El servidor inicia correctamente y queda escuchando conexiones en `localhost:5000`.
 <p align="center">
-  <img src="./assets/demo-chat.gif" alt="Demostración de comunicación Cliente-Servidor" width="750">
+  <img src="./assets/test-servidor.gif" alt="Inicio del servidor en localhost:5000" width="750">
 </p>
 
-El intercambio permite enviar múltiples mensajes dentro de una misma conexión y recibir la confirmación correspondiente del servidor.
+
 
 <br>
 
-- **Persistencia en SQLite**
+#### 2. Comunicación Cliente-Servidor
 
+- El cliente puede enviar varios mensajes dentro de una misma sesión, recibir la confirmación del servidor y finalizar la conexión escribiendo `éxito`.
 <p align="center">
-  <img src="./assets/test-base-datos.png" alt="Mensajes almacenados en SQLite" width="700">
+  <img src="./assets/test-mensajes.gif" alt="Intercambio de múltiples mensajes entre cliente y servidor" width="750">
 </p>
 
-Los mensajes enviados quedan registrados en la tabla `mensajes` junto con la fecha y hora de recepción y la IP del cliente.
+
+
+- **Vista del cliente:**
+
+<p align="center">
+  <img src="./assets/test-mensajes-cliente.png" alt="Mensajes enviados y respuestas recibidas por el cliente" width="750">
+</p>
+
+- **Vista del servidor (el servidor registra los mensajes recibidos y detecta correctamente la desconexión del cliente):**
+
+<p align="center">
+  <img src="./assets/test-mensajes-servidor.png" alt="Mensajes recibidos por el servidor" width="750">
+</p>
+
+
+
+<br>
+
+#### 3. Validación de mensajes vacíos
+
+- Cuando el usuario intenta enviar un mensaje vacío, el cliente impide el envío y solicita ingresar un nuevo mensaje.
+<p align="center">
+  <img src="./assets/test-mensajes-vacios.gif" alt="Validación de mensajes vacíos" width="750">
+</p>
+
+
+
+- **Vista del cliente:**
+
+<p align="center">
+  <img src="./assets/test-mensajes-vacios-cliente.png" alt="Validación de mensajes vacíos desde el cliente" width="750">
+</p>
+
+- **Vista del servidor (el servidor acepta la conexión, pero no recibe ni registra los mensajes vacíos):**
+
+<p align="center">
+  <img src="./assets/test-mensajes-vacios-servidor.png" alt="Servidor sin recepción de mensajes vacíos" width="750">
+</p>
+
+
+<br>
+
+#### 4. Persistencia en SQLite
+
+<p align="center">
+  <img src="./assets/test-base-datos.png" alt="Mensajes almacenados en la base de datos SQLite" width="750">
+</p>
+
+Los mensajes válidos quedan almacenados en la tabla `mensajes` de `chat.db`, junto con su identificador, contenido, fecha y hora de recepción e IP del cliente.
 
 <br>
 
@@ -369,7 +422,7 @@ Los mensajes enviados quedan registrados en la tabla `mensajes` junto con la fec
 - **Visual Studio Code** – Desarrollo y edición del código.
 - **Git** – Control de versiones.
 - **GitHub** – Alojamiento del repositorio.
-- 
+  
 ### Lenguaje
 
 - `Python 3` – Implementación del servidor y cliente.
