@@ -200,7 +200,7 @@ El archivo `cliente.py` establece la conexión con el servidor y gestiona la int
 
 ---
 
-## 🗄️ Base de Datos
+## 💾 Base de Datos
 
 Los mensajes recibidos por el servidor se almacenan utilizando **SQLite**.
 
@@ -288,76 +288,47 @@ SQLite permite almacenar los mensajes en un archivo local sin necesidad de insta
 
 ---
 
-## 🧪 Pruebas
+## 📈 Testing
 
-Se realizarán pruebas locales ejecutando primero el servidor y posteriormente el cliente desde una segunda terminal.
+Se realizaron pruebas locales ejecutando primero `servidor.py` y luego `cliente.py` desde una segunda terminal.
 
-### Casos de prueba
+Se verificaron los principales comportamientos del sistema:
 
 | Prueba | Resultado esperado | Estado |
 | :--- | :--- | :---: |
-| Iniciar servidor | Servidor escuchando en `localhost:5000` | ⏳ |
-| Conectar cliente | Conexión aceptada correctamente | ⏳ |
-| Enviar un mensaje | Mensaje almacenado y confirmación recibida | ⏳ |
-| Enviar varios mensajes | Todos son procesados dentro de la misma sesión | ⏳ |
-| Enviar mensaje vacío | El cliente impide el envío | ⏳ |
-| Escribir `éxito` | La conexión finaliza correctamente | ⏳ |
-| Ejecutar cliente sin servidor | Se informa que no se pudo establecer la conexión | ⏳ |
-| Verificar SQLite | Los mensajes aparecen almacenados en `chat.db` | ⏳ |
+| Iniciar servidor | Servidor escuchando en `localhost:5000` | ✅ |
+| Conectar cliente | Conexión establecida correctamente | ✅ |
+| Enviar un mensaje | Mensaje almacenado y confirmación recibida | ✅ |
+| Enviar varios mensajes | Todos son procesados dentro de la misma sesión | ✅ |
+| Enviar mensaje vacío | El mensaje no se envía y se solicita uno nuevo | ✅ |
+| Escribir `éxito` | La sesión finaliza correctamente | ✅ |
+| Ejecutar cliente sin servidor | Se informa que no se pudo establecer la conexión | ✅ |
+| Verificar SQLite | Los mensajes quedan almacenados en `chat.db` | ✅ |
 
-> Los estados de esta tabla se actualizarán luego de completar las pruebas locales.
+### Evidencias
 
----
-
-## 📷 Evidencias de Testing
-
-Las evidencias visuales se incorporarán luego de finalizar las pruebas locales.
-
-### Comunicación Cliente-Servidor
-
-<!--
-Cuando agregues el GIF a /assets, quitar estos comentarios:
+- **Comunicación Cliente-Servidor**
 
 <p align="center">
-  <img src="./assets/demo-chat.gif" alt="Demostración Cliente-Servidor" width="750">
+  <img src="./assets/demo-chat.gif" alt="Demostración de comunicación Cliente-Servidor" width="750">
 </p>
--->
 
-> 🎥 **Pendiente:** GIF demostrativo del intercambio de múltiples mensajes entre cliente y servidor.
+El intercambio permite enviar múltiples mensajes dentro de una misma conexión y recibir la confirmación correspondiente del servidor.
 
-### Ejecución del Servidor y Cliente
+<br>
 
-<!--
-<table>
-  <tr>
-    <td align="center">
-      <strong>🖥️ Servidor</strong><br>
-      <img src="./assets/test-servidor.png" width="430" alt="Prueba del servidor">
-    </td>
-    <td align="center">
-      <strong>💬 Cliente</strong><br>
-      <img src="./assets/test-cliente.png" width="430" alt="Prueba del cliente">
-    </td>
-  </tr>
-</table>
--->
+- **Persistencia en SQLite**
 
-> 📌 **Pendiente:** capturas de las terminales del servidor y del cliente.
-
-### Persistencia en SQLite
-
-<!--
 <p align="center">
   <img src="./assets/test-base-datos.png" alt="Mensajes almacenados en SQLite" width="700">
 </p>
--->
 
-> 🗄️ **Pendiente:** captura de los mensajes almacenados en la tabla `mensajes`.
-
+Los mensajes enviados quedan registrados en la tabla `mensajes` junto con la fecha y hora de recepción y la IP del cliente.
 
 <br>
 
 ---
+
 
 ## 📋 Checklist
 
@@ -461,13 +432,11 @@ Para finalizar la sesión, escribir `éxito`.
 
 ---
 
-## 🎓 Proyecto Académico
-
-Proyecto desarrollado como parte de la materia **Programación sobre Redes** de la **Tecnicatura Superior en Desarrollo de Software - IFTS N.º 29**.
-
-<br>
 
 
-<p align="center">
-  Desarrollado por <strong>Mariana Aiello</strong> 💻
-</p>
+<div align="center">
+
+<p>  IFTS N°29 - Tecnicatura Superior en Desarrollo de Software - Programación sobre Redes</p>
+<p> MIT License - Desarrollado por <strong>Mariana Aiello</strong> </p>
+</div>
+
