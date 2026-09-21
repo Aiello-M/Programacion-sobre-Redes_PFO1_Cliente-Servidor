@@ -1,0 +1,473 @@
+<div align="center">
+
+# PFO1 - Chat Básico Cliente-Servidor
+
+## Programación sobre Redes
+
+<br>
+
+![Status](https://img.shields.io/badge/STATUS-EN%20PRUEBAS-yellow?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3-blue?style=for-the-badge&logo=python&logoColor=blue)
+![SQLite](https://img.shields.io/badge/SQLite-orange?style=for-the-badge&logo=sqlite&logoColor=cream)
+![Sockets](https://img.shields.io/badge/Sockets-TCP%2FIP-green?style=for-the-badge)
+![GitHub](https://img.shields.io/badge/GitHub-Repositorio-purple?style=for-the-badge&logo=github&logoColor=white)
+
+</div>
+
+<br>
+
+---
+
+## 📚 Datos del Proyecto
+
+-  **Institución:** IFTS N.º 29   
+-  **Carrera:** Tecnicatura Superior en Desarrollo de Software   
+-  **Materia:** Programación sobre Redes  
+-  **Estudiante:** Mariana Aiello  
+-  **Repositorio:** [Programacion-sobre-Redes_PFO1_Cliente-Servidor](https://github.com/Aiello-M/Programacion-sobre-Redes_PFO1_Cliente-Servidor)
+
+<br>
+
+
+---
+
+## 📖 Descripción del Proyecto
+
+Este repositorio corresponde a la **Propuesta Formativa Obligatoria 1 (PFO1)** de la materia **Programación sobre Redes**.
+
+El proyecto implementa un chat básico basado en el modelo **Cliente-Servidor**, utilizando sockets TCP/IP para establecer la comunicación entre ambos programas.
+
+El servidor escucha conexiones en `localhost:5000`, recibe los mensajes enviados por el cliente y los almacena en una base de datos SQLite junto con la fecha y hora de recepción y la dirección IP del cliente.
+
+Luego de almacenar cada mensaje, el servidor envía una confirmación con el formato:
+```text
+Mensaje recibido: <timestamp>
+```
+
+El cliente puede enviar múltiples mensajes dentro de una misma conexión hasta que el usuario escriba `éxito`.
+
+<br>
+
+---
+
+## 🎯 Objetivo
+
+Aplicar los conceptos del modelo **Cliente-Servidor** y la comunicación mediante **Sockets TCP/IP**, incorporando además persistencia de datos con SQLite.
+
+Se busca implementar:
+
+- Comunicación entre cliente y servidor mediante sockets.
+- Envío y recepción de múltiples mensajes.
+- Persistencia de los mensajes recibidos.
+- Registro de fecha, hora e IP del cliente.
+- Respuestas de confirmación desde el servidor.
+- Modularización mediante funciones.
+- Manejo de errores de conexión, socket y base de datos.
+- Cierre adecuado de los recursos utilizados.
+
+<br>
+
+---
+
+## 🔄 Funcionamiento General
+
+El flujo de comunicación implementado es el siguiente:
+
+```text
+┌─────────────┐                             ┌─────────────┐
+│   CLIENTE   │                             │  SERVIDOR   │
+└──────┬──────┘                             └──────┬──────┘
+       │                                           │
+       │──── Conexión localhost:5000 ─────────────>│
+       │                                           │
+       │──── Mensaje enviado ─────────────────────>│
+       │                                           │
+       │                                      Recibe mensaje
+       │                                           │
+       │                                      Guarda en SQLite
+       │                                           │
+       │<──── "Mensaje recibido: timestamp" ───────│
+       │                                           │
+       │──── Nuevo mensaje ───────────────────────>│
+       │                                           │
+       │                  ...                      │
+       │                                           │
+  Usuario escribe                                  │
+     "éxito"                                       │
+       │                                           │
+       └──────── Cierre de conexión ──────────────>│
+```
+
+Funcionamiento durante la sesión:
+
+1. Se le solicita al usuario que ingrese un mensaje.
+2. Se verifica si el usuario escribió `éxito` y, en ese caso, finaliza la sesión y se cierra la conexión.
+3. Si el mensaje está vacío, no se envía y el programa vuelve a solicitar uno nuevo.
+4. Si el mensaje es válido, se codifica en UTF-8 y se envía al servidor mediante el socket.
+5. El servidor recibe el mensaje, registra la fecha y hora, y lo almacena en SQLite junto con la IP del cliente.
+6. El servidor envía una confirmación con el formato `Mensaje recibido: <timestamp>`.
+7. El programa cliente recibe la respuesta, la decodifica y la muestra en pantalla.
+
+> Este intercambio puede repetirse múltiples veces dentro de una misma conexión, hasta que el usuario escriba `éxito`.
+
+<br>
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
+Programacion-sobre-Redes_PFO1_Cliente-Servidor/
+│
+├── servidor.py            # Servidor TCP/IP y gestión de la base de datos
+├── cliente.py             # Cliente TCP/IP e interacción con el usuario
+├── .gitignore             # Archivos excluidos del repositorio
+├── README.md              # Documentación del proyecto
+│
+└── assets/                # Recursos utilizados en el README
+    ├── imgPerfil.jpg
+    ├── demo-chat.gif
+    ├── test-servidor.png
+    ├── test-cliente.png
+    └── test-base-datos.png
+```
+
+> **Nota:** La base de datos `chat.db` no se almacena en el repositorio.  
+> Se genera automáticamente al ejecutar el servidor por primera vez.
+
+<br>
+
+---
+
+## 🖥️ Servidor
+
+El archivo `servidor.py` es responsable de iniciar el socket TCP/IP, aceptar conexiones de clientes, recibir los mensajes y almacenarlos en SQLite.
+
+### Configuración
+
+```python
+HOST = "localhost"
+PORT = 5000
+DB_NAME = "chat.db"
+```
+
+El servidor utiliza:
+
+- `localhost` como host.
+- Puerto `5000`.
+- Protocolo TCP.
+- Base de datos SQLite `chat.db`.
+
+### Funciones principales
+
+| Función | Descripción |
+| :--- | :--- |
+| `inicializar_bd()` | Abre la conexión con SQLite y crea la tabla `mensajes` si todavía no existe. |
+| `inicializar_socket()` | Crea el socket TCP/IP, lo vincula con `localhost:5000` y lo deja escuchando conexiones entrantes. |
+| `guardar_mensaje()` | Inserta en la base de datos el contenido del mensaje, su fecha de envío y la IP del cliente. |
+| `atender_cliente()` | Recibe los mensajes enviados por un cliente conectado, solicita su almacenamiento y envía la respuesta correspondiente. |
+| `aceptar_conexiones()` | Mantiene al servidor esperando conexiones y deriva cada cliente aceptado a `atender_cliente()`. |
+| `ejecutar_servidor()` | Coordina la inicialización de la base de datos y del socket, la ejecución del servidor y el manejo de errores principales. |
+
+### Manejo de errores
+
+El servidor contempla errores relacionados con:
+
+- Acceso o inicialización de la base de datos SQLite.
+- Inicialización del socket.
+- Puerto ocupado.
+- Errores producidos al guardar mensajes.
+
+En caso de finalizar la ejecución, la conexión con la base de datos se cierra mediante un bloque `finally`.
+
+<br>
+
+---
+
+## 👤 Cliente
+
+El archivo `cliente.py` establece la conexión con el servidor y gestiona la interacción con el usuario, permitiendole enviar múltiples mensajes.
+
+### Funciones principales
+
+| Función | Descripción |
+| :--- | :--- |
+| `conectar_servidor()` | Crea el socket TCP/IP del cliente y establece la conexión con `localhost:5000`. |
+| `gestionar_mensajes()` | Gestiona los mensajes ingresados por el usuario y el intercambio de datos con el servidor hasta finalizar la sesión (usuarioescribe `éxito`). |
+| `ejecutar_cliente()` | Coordina la ejecución del cliente y maneja posibles errores de conexión o de red. |
+
+<br>
+
+---
+
+## 🗄️ Base de Datos
+
+Los mensajes recibidos por el servidor se almacenan utilizando **SQLite**.
+
+La base de datos utiliza una tabla llamada `mensajes`.
+
+### Estructura
+
+| Campo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| `id` | INTEGER | Identificador único autoincremental del mensaje. |
+| `contenido` | TEXT | Contenido enviado por el cliente. |
+| `fecha_envio` | TEXT | Fecha y hora en que el servidor recibió el mensaje. |
+| `ip_cliente` | TEXT | Dirección IP correspondiente al cliente conectado. |
+
+La tabla se crea automáticamente al iniciar el servidor si todavía no existe:
+
+```sql
+CREATE TABLE IF NOT EXISTS mensajes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contenido TEXT NOT NULL,
+    fecha_envio TEXT NOT NULL,
+    ip_cliente TEXT NOT NULL
+)
+```
+
+<br>
+
+---
+
+## ⚙️ Decisiones de Implementación
+
+### Modularización
+
+El código fue dividido en funciones con responsabilidades específicas para facilitar su lectura, mantenimiento y prueba.
+
+En el servidor se separaron las tareas de:
+
+- Inicialización de la base de datos.
+- Inicialización del socket.
+- Almacenamiento de mensajes.
+- Atención de cada cliente conectado.
+- Aceptación de nuevas conexiones.
+- Coordinación general del servidor.
+
+En el cliente se separaron:
+
+- La conexión con el servidor.
+- La gestión del intercambio de mensajes.
+- La coordinación general y el manejo de errores.
+
+<br>
+
+### Comunicación TCP/IP
+
+Se utilizaron sockets configurados con:
+
+```python
+socket.AF_INET
+socket.SOCK_STREAM
+```
+
+`AF_INET` permite trabajar con direcciones IPv4 y `SOCK_STREAM` establece una comunicación mediante TCP.
+
+<br>
+
+### Codificación
+
+Para el envío y recepción de mensajes se utiliza codificación UTF-8:
+
+```python
+# Envío
+mensaje.encode("utf-8")
+
+# Recepción
+datos.decode("utf-8")
+```
+
+<br>
+
+### Persistencia
+
+SQLite permite almacenar los mensajes en un archivo local sin necesidad de instalar o configurar un servidor de base de datos externo.
+
+<br>
+
+---
+
+## 🧪 Pruebas
+
+Se realizarán pruebas locales ejecutando primero el servidor y posteriormente el cliente desde una segunda terminal.
+
+### Casos de prueba
+
+| Prueba | Resultado esperado | Estado |
+| :--- | :--- | :---: |
+| Iniciar servidor | Servidor escuchando en `localhost:5000` | ⏳ |
+| Conectar cliente | Conexión aceptada correctamente | ⏳ |
+| Enviar un mensaje | Mensaje almacenado y confirmación recibida | ⏳ |
+| Enviar varios mensajes | Todos son procesados dentro de la misma sesión | ⏳ |
+| Enviar mensaje vacío | El cliente impide el envío | ⏳ |
+| Escribir `éxito` | La conexión finaliza correctamente | ⏳ |
+| Ejecutar cliente sin servidor | Se informa que no se pudo establecer la conexión | ⏳ |
+| Verificar SQLite | Los mensajes aparecen almacenados en `chat.db` | ⏳ |
+
+> Los estados de esta tabla se actualizarán luego de completar las pruebas locales.
+
+---
+
+## 📷 Evidencias de Testing
+
+Las evidencias visuales se incorporarán luego de finalizar las pruebas locales.
+
+### Comunicación Cliente-Servidor
+
+<!--
+Cuando agregues el GIF a /assets, quitar estos comentarios:
+
+<p align="center">
+  <img src="./assets/demo-chat.gif" alt="Demostración Cliente-Servidor" width="750">
+</p>
+-->
+
+> 🎥 **Pendiente:** GIF demostrativo del intercambio de múltiples mensajes entre cliente y servidor.
+
+### Ejecución del Servidor y Cliente
+
+<!--
+<table>
+  <tr>
+    <td align="center">
+      <strong>🖥️ Servidor</strong><br>
+      <img src="./assets/test-servidor.png" width="430" alt="Prueba del servidor">
+    </td>
+    <td align="center">
+      <strong>💬 Cliente</strong><br>
+      <img src="./assets/test-cliente.png" width="430" alt="Prueba del cliente">
+    </td>
+  </tr>
+</table>
+-->
+
+> 📌 **Pendiente:** capturas de las terminales del servidor y del cliente.
+
+### Persistencia en SQLite
+
+<!--
+<p align="center">
+  <img src="./assets/test-base-datos.png" alt="Mensajes almacenados en SQLite" width="700">
+</p>
+-->
+
+> 🗄️ **Pendiente:** captura de los mensajes almacenados en la tabla `mensajes`.
+
+
+<br>
+
+---
+
+## 📋 Checklist
+
+### Servidor
+
+- ✅ Socket configurado para escuchar en `localhost:5000`.
+- ✅ Código organizado en funciones con responsabilidades separadas.
+- ✅ Recepción de mensajes enviados por el cliente.
+- ✅ Almacenamiento de mensajes en una base de datos SQLite.
+- ✅ Tabla `mensajes` con los campos requeridos: `id`, `contenido`, `fecha_envio` e `ip_cliente`.
+- ✅ Manejo de errores relacionados con el acceso a la base de datos y la inicialización del socket.
+- ✅ Control del error producido cuando el puerto se encuentra ocupado.
+- ✅ Respuesta al cliente con el formato `Mensaje recibido: <timestamp>`.
+- ✅ Comentarios incorporados en las secciones principales del código.
+
+### Cliente
+
+- ✅ Conexión con el servidor mediante sockets TCP/IP.
+- ✅ Envío de múltiples mensajes dentro de una misma sesión.
+- ✅ Finalización de la sesión cuando el usuario escribe `éxito`.
+- ✅ Visualización de la respuesta enviada por el servidor para cada mensaje.
+- ✅ Manejo de errores de conexión y de red.
+
+### Testing
+
+- ✅ Pruebas locales realizadas ejecutando primero el servidor y luego el cliente desde otra terminal.
+- ✅ Persistencia de los mensajes verificada en SQLite.
+- ✅ Repositorio creado en GitHub con el código fuente y la documentación del proyecto.
+
+<br>
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+### Herramientas
+
+- **Visual Studio Code** – Desarrollo y edición del código.
+- **Git** – Control de versiones.
+- **GitHub** – Alojamiento del repositorio.
+- 
+### Lenguaje
+
+- `Python 3` – Implementación del servidor y cliente.
+
+### Librerías estándar de Python
+
+- `socket` – Comunicación mediante sockets TCP/IP.
+- `sqlite3` – Persistencia de los mensajes en SQLite.
+- `datetime` – Generación de fecha y hora para los mensajes.
+> No se requieren librerías externas ni instalación de dependencias adicionales.
+
+<br>
+
+---
+
+## 🚀 Instalación y Ejecución
+
+### 1. Clonar el repositorio e ingresar al proyecto
+
+```bash
+git clone https://github.com/Aiello-M/Programacion-sobre-Redes_PFO1_Cliente-Servidor.git
+cd Programacion-sobre-Redes_PFO1_Cliente-Servidor
+```
+
+### 2. Ejecutar el servidor
+
+Abrir una primera terminal y ejecutar:
+
+```bash
+python servidor.py
+```
+El servidor quedará escuchando en `localhost:5000`.
+
+### 3. Ejecutar el cliente
+
+Con el servidor en ejecución, abrir una segunda terminal:
+
+```bash
+python cliente.py
+```
+El cliente permitirá enviar múltiples mensajes y mostrará la respuesta del servidor para cada uno.
+
+
+Para finalizar la sesión, escribir `éxito`.
+
+
+<br>
+
+---
+
+## ✒️ Autora
+
+| [<img src="./assets/imgPerfil.jpg" width="115" alt="Mariana Aiello"><br><sub>Mariana Aiello</sub>](https://github.com/Aiello-M) |
+| :---: |
+
+**GitHub:** [github.com/Aiello-M](https://github.com/Aiello-M)
+
+<br>
+
+
+---
+
+## 🎓 Proyecto Académico
+
+Proyecto desarrollado como parte de la materia **Programación sobre Redes** de la **Tecnicatura Superior en Desarrollo de Software - IFTS N.º 29**.
+
+<br>
+
+
+<p align="center">
+  Desarrollado por <strong>Mariana Aiello</strong> 💻
+</p>
